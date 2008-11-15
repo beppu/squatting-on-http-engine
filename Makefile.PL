@@ -6,7 +6,6 @@ WriteMakefile (
   LICENSE       => 'mit',
   VERSION_FROM  => 'lib/Squatting/On/HTTP/Engine.pm',
   ABSTRACT_FROM => 'lib/Squatting/On/HTTP/Engine.pm',
-  EXE_FILES     => [ 'bin/squatting' ],
   PREREQ_PM     => {
     'Squatting' => 0.52
   },
