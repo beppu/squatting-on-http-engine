@@ -2,20 +2,35 @@ package Squatting::On::HTTP::Engine;
 use strict;
 no  strict 'refs';
 use warnings;
+
 use HTTP::Engine;
-use Data::Dump 'pp';
 
 our $VERSION = '0.01';
-
 our %p;
+
+$p{e} = sub {
+  my ($req) = @_;
+  my %env = (
+    QUERY_STRING   => $req->uri->query || '',
+    REQUEST_METHOD => $req->method,
+    REQUEST_PATH   => $req->path,
+    REQUEST_URI    => $req->uri.''
+  );
+  my $h = $req->headers;
+  $h->scan(sub{
+    my ($header, $value) = @_;
+    my $key = uc $header;
+    $key =~ s/-/_/g;
+    $key = "HTTP_$key";
+    $env{$key} = $value;
+  });
+  \%env;
+};
 
 $p{init_cc} = sub {
   my ($c, $req) = @_;
   my $cc = $c->clone;
-  $cc->env     = { 
-    REQUEST_METHOD => 'GET',
-    REQUEST_PATH   => $req->path,
-  };
+  $cc->env     = $p{e}($req);
   $cc->cookies = $req->cookies;
   $cc->input   = $req->parameters;
   $cc->headers = { 'Content-Type' => 'text/html' };
@@ -33,10 +48,11 @@ sub http_engine {
     my ($c, $p) = &{ $app . "::D" }($req->uri->path);
     my $cc      = $p{init_cc}($c, $req);
     my $content = $app->service($cc, @$p);
-    my $res     = HTTP::Engine::Response->new(
+    HTTP::Engine::Response->new(
       status  => $cc->status,
+      headers => $cc->headers,
       cookies => $cc->cookies,
-      body    => $content
+      body    => $content,
     );
   };
   HTTP::Engine->new(interface => \%options);
