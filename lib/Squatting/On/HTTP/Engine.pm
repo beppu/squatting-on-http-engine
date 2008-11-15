@@ -1,11 +1,45 @@
 package Squatting::On::HTTP::Engine;
 use strict;
+no  strict 'refs';
 use warnings;
+use HTTP::Engine;
+use Data::Dump 'pp';
 
 our $VERSION = '0.01';
 
+our %p;
+
+$p{init_cc} = sub {
+  my ($c, $req) = @_;
+  my $cc = $c->clone;
+  $cc->env     = { 
+    REQUEST_METHOD => 'GET',
+    REQUEST_PATH   => $req->path,
+  };
+  $cc->cookies = $req->cookies;
+  $cc->input   = $req->parameters;
+  $cc->headers = { 'Content-Type' => 'text/html' };
+  $cc->v       = {};
+  $cc->state   = undef;
+  $cc->log     = undef;
+  $cc->status  = 200;
+  $cc;
+};
+
 sub http_engine {
-  my ($app, $options) = @_;
+  my ($app, %options) = @_;
+  $options{request_handler} = sub {
+    my ($req)   = @_;
+    my ($c, $p) = &{ $app . "::D" }($req->uri->path);
+    my $cc      = $p{init_cc}($c, $req);
+    my $content = $app->service($cc, @$p);
+    my $res     = HTTP::Engine::Response->new(
+      status  => $cc->status,
+      cookies => $cc->cookies,
+      body    => $content
+    );
+  };
+  HTTP::Engine->new(interface => \%options);
 }
 
 1;
@@ -18,7 +52,11 @@ Squatting::On::HTTP::Engine - run Squatting apps on top of HTTP::Engine
 
 =head1 SYNOPSIS
 
-...
+Basic
+
+  use App 'On::HTTP::Engine';
+  App->init;
+  App->http_engine->run;
 
 =head1 DESCRIPTION
 
