@@ -35,8 +35,6 @@ $p{init_cc} = sub {
   $cc->input   = $req->parameters;
   $cc->headers = { 'Content-Type' => 'text/html' };
   $cc->v       = {};
-  $cc->state   = undef;
-  $cc->log     = undef;
   $cc->status  = 200;
   $cc;
 };
@@ -68,17 +66,56 @@ Squatting::On::HTTP::Engine - run Squatting apps on top of HTTP::Engine
 
 =head1 SYNOPSIS
 
-Basic
+Squatting on top of HTTP::Engine::Interface::ServerSimple
 
+  # app_server_simple.pl
   use App 'On::HTTP::Engine';
   App->init;
-  App->http_engine->run;
+  App->http_engine(
+    module => 'ServerSimple',
+    args   => {
+      host => 'localhost',
+      port => 2222,
+    },
+  )->run;
+
+Squatting on top of HTTP::Engine::Interface::FCGI
+
+  # app_fastcgi.pl
+  use App 'On::HTTP::Engine';
+  App->init;
+  App->http_engine(
+    interface => 'FCGI',
+    args      => {
+    }
+  )->run;
+
+Squatting on top of HTTP::Engine::Interface::ModPerl
+
+  # App/ModPerl.pm
+  package App::ModPerl;
+  use Moose;
+  extends 'HTTP::Engine::Interface::ModPerl';
+  use App 'On::HTTP::Engine';
+
+  App->init;
+
+  sub create_engine {
+    my ($class, $r, $context_key) = @_;
+    App->http_engine(interface => 'ModPerl');
+  }
+
+  1;
 
 =head1 DESCRIPTION
 
 
 
 =head1 API
+
+=head2 $something_clever
+
+=head3 App->http_engine(%options)
 
 
 
