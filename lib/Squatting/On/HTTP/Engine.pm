@@ -109,15 +109,24 @@ Squatting on top of HTTP::Engine::Interface::ModPerl
 
 =head1 DESCRIPTION
 
-
+This module makes it possible to run Squatting apps on top of L<HTTP::Engine>.
 
 =head1 API
 
-=head2 $something_clever
+=head2 An HTTP Abstraction Layer for Perl
 
 =head3 App->http_engine(%options)
 
+This method creates an HTTP::Engine object based on the C<%options> that are
+given to it.  The C<%options> are passed directly to HTTP::Engine's C<new()>
+method and Squatting-based C<request_handler> is provided.  After you get
+an HTTP::Engine object back, you can call C<run()> on it to start up an
+HTTP server in most cases.  The only time you don't do this is when you're
+using the ModPerl interface.  See the L</SYNOPSIS> for some examples.
 
+=head1 SEE ALSO
+
+L<HTTP::Engine>
 
 =head1 AUTHOR
 
