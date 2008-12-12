@@ -8,7 +8,7 @@ WriteMakefile (
   ABSTRACT_FROM => 'lib/Squatting/On/HTTP/Engine.pm',
   PREREQ_PM     => {
     'Squatting'    => 0.52,
-    'HTTP::Engine' => 0.18,
+    'HTTP::Engine' => '0.0.18',
   },
   depend => { distmeta => 'metamunge' }
 );
