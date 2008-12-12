@@ -87,6 +87,11 @@ Squatting on top of HTTP::Engine::Interface::FCGI
   App->http_engine(
     interface => 'FCGI',
     args      => {
+      listen      => 9000,
+      nproc       => 2,
+      pidfile     => '/var/run/app-fastcgi.pid'
+      leave_umask => 1,
+      keep_stderr => 1,
     }
   )->run;
 
