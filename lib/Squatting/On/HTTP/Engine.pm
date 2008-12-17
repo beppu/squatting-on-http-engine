@@ -131,7 +131,7 @@ using the ModPerl interface.  See the L</SYNOPSIS> for some examples.
 
 =head1 SEE ALSO
 
-L<HTTP::Engine>
+L<Squatting>, L<HTTP::Engine>, L<Mojo>
 
 =head1 AUTHOR
 
