@@ -69,6 +69,10 @@ Squatting::On::HTTP::Engine - run Squatting apps on top of HTTP::Engine
 Squatting on top of HTTP::Engine::Interface::ServerSimple
 
   # app_server_simple.pl
+
+  #!/usr/bin/perl
+  use strict;
+  use warnings;
   use App 'On::HTTP::Engine';
   App->init;
   App->http_engine(
@@ -82,17 +86,41 @@ Squatting on top of HTTP::Engine::Interface::ServerSimple
 Squatting on top of HTTP::Engine::Interface::FCGI
 
   # app_fastcgi.pl
+
+  #!/usr/bin/perl
+  use strict;
+  use warnings;
+  use Getopt::Long;
   use App 'On::HTTP::Engine';
+
+  # options
+  %_ = (
+    leave_umask => 0,
+    keep_stderr => 0,
+    no_intr     => 0,
+    detatch     => 0,
+    manager     => 'FCGI::ProcManager',
+    nproc       => 1,
+    pidfile     => 'app.pid',
+    listen      => '8000',
+  );
+  
+  GetOptions(
+    \%_,
+    'leave_umask',
+    'keep_stderr',
+    'no_intr',
+    'detatch',
+    'manager=s',
+    'nproc=i',
+    'pidfile=s',
+    'listen=s',
+  );
+
   App->init;
   App->http_engine(
     interface => 'FCGI',
-    args      => {
-      listen      => 9000,
-      nproc       => 2,
-      pidfile     => '/var/run/app-fastcgi.pid'
-      leave_umask => 1,
-      keep_stderr => 1,
-    }
+    args      => \%_,
   )->run;
 
 Squatting on top of HTTP::Engine::Interface::ModPerl
