@@ -5,7 +5,7 @@ use warnings;
 
 use HTTP::Engine;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 our %p;
 
 $p{e} = sub {
