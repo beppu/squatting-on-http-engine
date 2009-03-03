@@ -41,7 +41,7 @@ $p{init_cc} = sub {
 
 sub http_engine {
   my ($app, %options) = @_;
-  $options{request_handler} = sub {
+  $options{interface}{request_handler} = sub {
     my ($req)   = @_;
     my ($c, $p) = &{ $app . "::D" }($req->uri->path);
     my $cc      = $p{init_cc}($c, $req);
@@ -53,7 +53,7 @@ sub http_engine {
       body    => $content,
     );
   };
-  HTTP::Engine->new(interface => \%options);
+  HTTP::Engine->new(%options);
 }
 
 1;
@@ -90,37 +90,22 @@ Squatting on top of HTTP::Engine::Interface::FCGI
   #!/usr/bin/perl
   use strict;
   use warnings;
-  use Getopt::Long;
   use App 'On::HTTP::Engine';
-
-  # options
-  %_ = (
-    leave_umask => 0,
-    keep_stderr => 0,
-    no_intr     => 0,
-    detatch     => 0,
-    manager     => 'FCGI::ProcManager',
-    nproc       => 1,
-    pidfile     => 'app.pid',
-    listen      => '8000',
-  );
-  
-  GetOptions(
-    \%_,
-    'leave_umask',
-    'keep_stderr',
-    'no_intr',
-    'detatch',
-    'manager=s',
-    'nproc=i',
-    'pidfile=s',
-    'listen=s',
-  );
 
   App->init;
   App->http_engine(
-    interface => 'FCGI',
-    args      => \%_,
+    interface => {
+      module => 'FCGI',
+      args   => {
+        leave_umask => 0,
+        keep_stderr => 1,
+        nointr      => 0,
+        detach      => 0,
+        manager     => 'FCGI::ProcManager',
+        nproc       => 4,
+        pidfile     => 'app.pid',
+        listen      => 'localhost:8000',
+      },
   )->run;
 
 Squatting on top of HTTP::Engine::Interface::ModPerl
