@@ -5,7 +5,7 @@ use warnings;
 
 use HTTP::Engine;
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 our %p;
 
 $p{e} = sub {
@@ -76,10 +76,12 @@ Squatting on top of HTTP::Engine::Interface::ServerSimple
   use App 'On::HTTP::Engine';
   App->init;
   App->http_engine(
-    module => 'ServerSimple',
-    args   => {
-      host => 'localhost',
-      port => 2222,
+    interface => {
+      module => 'ServerSimple',
+      args   => {
+        host => 'localhost',
+        port => 2222,
+      },
     },
   )->run;
 
@@ -120,7 +122,7 @@ Squatting on top of HTTP::Engine::Interface::ModPerl
 
   sub create_engine {
     my ($class, $r, $context_key) = @_;
-    App->http_engine(interface => 'ModPerl');
+    App->http_engine(interface => { module => 'ModPerl' });
   }
 
   1;

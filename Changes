@@ -1,3 +1,6 @@
+0.03 2009-03-03
+  - fixed bugs in the SYNOPSIS examples
+
 0.02 2009-03-03
   - more documentation
   - updated to work with HTTP::Engine 0.1.x API
