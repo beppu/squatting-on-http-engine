@@ -5,7 +5,7 @@ use warnings;
 
 use HTTP::Engine;
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 our %p;
 
 $p{e} = sub {
@@ -43,9 +43,7 @@ sub http_engine {
   my ($app, %options) = @_;
   $options{interface}{request_handler} = sub {
     my ($req)   = @_;
-    my $u_path  = $req->uri->path;
-    my $path    = substr($u_path, 0, (length($u_path) >> 1)) if (length($u_path) > 1); # XXX - remove hack when H:E:I:FCGI gets fixed
-    $path     ||= $u_path;
+    my $path    = $req->uri->path;
     my ($c, $p) = &{ $app . "::D" }($path);
     my $cc      = $p{init_cc}($c, $req);
     my $content = $app->service($cc, @$p);

@@ -1,3 +1,9 @@
+0.05 2009-03-09
+  - The FastCGI situation was more complex than I realized.
+    After chatting with some people on #http-engine,
+    I discovered that the issue I was having could be fixed via
+    configuration rather than code, so I removed the code workaround.
+
 0.04 2009-03-08
   - added a temporary workaround for bug in HTTP::Engine::Interface::FCGI
 
